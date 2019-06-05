@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
         Users users = new Users();
         users.setUsername(userName);
         UsersVo usersVo = usersMapper.selectOne(users);
-        return usersVo == null ? false : true ;
+        return usersVo == null ? false : true;
     }
 
     @Override
@@ -56,5 +56,14 @@ public class UserServiceImpl implements UserService {
         users.setPassword(MD5Utils.getMD5Str(users.getPassword()));
         usersMapper.insertSelective(users);
         return users;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ChatException.class)
+    public Users update(Users users) throws ChatException{
+        if (usersMapper.updateByPrimaryKeySelective(users) <= 0) {
+            throw new ChatException("修改用户信息失败", 500);
+        }
+        return usersMapper.selectByPrimaryKey(users.getId());
     }
 }

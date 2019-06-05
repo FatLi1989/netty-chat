@@ -3,16 +3,21 @@ package com.novli.netty.chat.controller;
 import com.novli.netty.chat.bo.UserBO;
 import com.novli.netty.chat.pojo.Users;
 import com.novli.netty.chat.service.UserService;
+import com.novli.netty.chat.util.constant.FileConstant;
+import com.novli.netty.chat.util.file.FastDFSClient;
+import com.novli.netty.chat.util.file.FileUtils;
 import com.novli.netty.chat.util.password.MD5Utils;
 import com.novli.netty.chat.util.result.JSONResult;
 import com.novli.netty.chat.vo.UsersVo;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jetty.server.Authentication;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
@@ -21,6 +26,9 @@ public class LoginController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    FastDFSClient fastDFSClient;
 
     @RequestMapping(value = "/registOrLogin", method = {RequestMethod.POST})
     public JSONResult login(@RequestBody Users users) throws Exception {
@@ -49,12 +57,27 @@ public class LoginController {
 
     @RequestMapping(value = "/uploadFaceBase64", method = {RequestMethod.POST})
     public JSONResult uploadFaceBase64(@RequestBody UserBO userBO) throws Exception {
+        /*  1. 接收到base64字符串转换成文件
+            2. 文件转换成MultipartFile上传到fastDFS
+            3. 拿到图片返回路径并保存到数据库
+            4. 返回信息给前端    */
+        Users result = null;
+        if (!StringUtils.isEmpty(userBO.getFaceData())) {
+            if (FileUtils.base64ToFile(FileConstant.FILE_PTAH, userBO.getFaceData())) {
+                MultipartFile file = FileUtils.fileToMultipart(FileConstant.FILE_PTAH);
+                String filePath = fastDFSClient.uploadBase64(file);
 
+                String thump = "_80x80.";
+                String arr[] = filePath.split("\\.");
+                String thumpImgUrl = arr[0] + thump + arr[1];
 
+                result.setId(userBO.getUserId());
+                result.setFaceImage(thumpImgUrl);
+                result.setFaceImageBig(filePath);
 
-
-
-
-        return JSONResult.ok();
+                result = userService.update(result);
+            }
+        }
+        return JSONResult.ok(result);
     }
 }
