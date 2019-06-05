@@ -3,11 +3,14 @@ package com.novli.netty.chat.service.impl;
 import com.novli.netty.chat.mapper.UsersMapper;
 import com.novli.netty.chat.pojo.Users;
 import com.novli.netty.chat.service.UserService;
+import com.novli.netty.chat.util.exception.ChatException;
 import com.novli.netty.chat.util.password.MD5Utils;
 import com.novli.netty.chat.vo.UsersVo;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -20,6 +23,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS, rollbackFor = ChatException.class)
     public boolean queryUserNameIsExist(String userName) {
         Users users = new Users();
         users.setUsername(userName);
@@ -28,6 +32,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
     public UsersVo queryUserForLogin(String userName, String password) {
 
         Users users = new Users();
@@ -38,6 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public Users save(Users users) throws Exception {
 
         String id = sid.nextShort();

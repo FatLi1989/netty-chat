@@ -1,5 +1,6 @@
 package com.novli.netty.chat.controller;
 
+import com.novli.netty.chat.bo.UserBO;
 import com.novli.netty.chat.pojo.Users;
 import com.novli.netty.chat.service.UserService;
 import com.novli.netty.chat.util.password.MD5Utils;
@@ -46,4 +47,14 @@ public class LoginController {
         return JSONResult.ok(userResult);
     }
 
+    @RequestMapping(value = "/uploadFaceBase64", method = {RequestMethod.POST})
+    public JSONResult uploadFaceBase64(@RequestBody UserBO userBO) throws Exception {
+
+
+
+
+
+
+        return JSONResult.ok();
+    }
 }

@@ -3,7 +3,7 @@
 <mapper namespace="com.novli.netty.chat.mapper.UsersMapper">
     <resultMap id="BaseResultMap" type="com.novli.netty.chat.pojo.Users">
         <id column="id" jdbcType="VARCHAR" property="id"/>
-        <result column="user_name" jdbcType="VARCHAR" property="username"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
         <result column="password" jdbcType="VARCHAR" property="password"/>
         <result column="face_image" jdbcType="VARCHAR" property="faceImage"/>
         <result column="face_image_big" jdbcType="VARCHAR" property="faceImageBig"/>
@@ -13,7 +13,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, user_name, password, face_image, face_image_big, nickname, qrcode, cid
+        id, username, password, face_image, face_image_big, nickname, qrcode, cid
     </sql>
 
     <sql id="condition">
@@ -44,7 +44,7 @@
     </delete>
 
     <insert id="insert" parameterType="com.novli.netty.chat.pojo.Users">
-        insert into users (id, user_name, password,
+        insert into users (id, username, password,
                            face_image, face_image_big, nickname,
                            qrcode, cid)
         values (#{id,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
@@ -59,7 +59,7 @@
                 id,
             </if>
             <if test="username != null">
-                user_name,
+                username,
             </if>
             <if test="password != null">
                 password,
@@ -112,7 +112,7 @@
         update users
         <set>
             <if test="username != null">
-                user_name = #{username,jdbcType=VARCHAR},
+                username = #{username,jdbcType=VARCHAR},
             </if>
             <if test="password != null">
                 password = #{password,jdbcType=VARCHAR},
@@ -138,7 +138,7 @@
 
     <update id="updateByPrimaryKey" parameterType="com.novli.netty.chat.pojo.Users">
         update users
-        set user_name      = #{username,jdbcType=VARCHAR},
+        set username      = #{username,jdbcType=VARCHAR},
             password       = #{password,jdbcType=VARCHAR},
             face_image     = #{faceImage,jdbcType=VARCHAR},
             face_image_big = #{faceImageBig,jdbcType=VARCHAR},

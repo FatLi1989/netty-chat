@@ -1,7 +1,10 @@
 package com.novli.netty.chat.vo;
 
 import lombok.Data;
-
+/**
+ * @author Liyanpeng
+ * @date 2019/6/5 16:22
+ **/
 @Data
 public class UsersVo {
 
