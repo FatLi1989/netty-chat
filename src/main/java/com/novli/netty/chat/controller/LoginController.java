@@ -9,6 +9,8 @@ import com.novli.netty.chat.util.file.FileUtils;
 import com.novli.netty.chat.util.password.MD5Utils;
 import com.novli.netty.chat.util.result.JSONResult;
 import com.novli.netty.chat.vo.UsersVo;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.server.Authentication;
 import org.springframework.beans.BeanUtils;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 
+@Slf4j
 @RestController
 @RequestMapping(value = "u")
 public class LoginController {
@@ -66,8 +69,10 @@ public class LoginController {
         if (!StringUtils.isEmpty(userBO.getFaceData())) {
             if (FileUtils.base64ToFile(FileConstant.FILE_PTAH, userBO.getFaceData())) {
                 MultipartFile file = FileUtils.fileToMultipart(FileConstant.FILE_PTAH);
+                Long startTime = System.currentTimeMillis();
+                log.info("-----------开始向fastDFS上传文件-----------");
                 String filePath = fastDFSClient.uploadBase64(file);
-
+                log.info("-----------向fastDFS上传文件完毕耗时 : {}-----------", System.currentTimeMillis() - startTime );
                 String thump = "_150x150.";
                 String arr[] = filePath.split("\\.");
                 String thumpImgUrl = arr[0] + thump + arr[1];
