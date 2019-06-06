@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8888
 
 
 spring:
@@ -21,3 +21,6 @@ fdfs:
     height: 150
   tracker-list:            #TrackerList参数,支持多个
     - 106.12.137.47:22122
+  pool:
+    max-total: 100
+    max-wait-millis: 60

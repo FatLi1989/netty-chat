@@ -22,5 +22,5 @@ public interface UsersMapper {
 
     int updateByPrimaryKey(Users record);
 
-    UsersVo selectOne(Users users);
+    Users selectOne(Users users);
 }

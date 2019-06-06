@@ -30,7 +30,7 @@
         where id = #{id,jdbcType=VARCHAR}
     </select>
 
-    <select id="selectOne" parameterType="com.novli.netty.chat.pojo.Users" resultType="com.novli.netty.chat.vo.UsersVo">
+    <select id="selectOne" parameterType="com.novli.netty.chat.pojo.Users" resultType="com.novli.netty.chat.pojo.Users">
         select
         <include refid="Base_Column_List"/>
         from users

@@ -19,7 +19,7 @@ public interface UserService {
      * @author Liyanpeng
      * @date 2019/6/5 17:20
      **/
-    UsersVo queryUserForLogin(String userName, String password);
+    Users queryUserForLogin(String userName, String password);
     /**
      * 保存用户信息
      * @author Liyanpeng

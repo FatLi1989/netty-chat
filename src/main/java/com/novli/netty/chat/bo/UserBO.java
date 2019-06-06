@@ -5,8 +5,6 @@ import lombok.Data;
 /**
  * @author Liyanpeng
  * @date 2019/6/5 16:23
- * @param
- * @return
  **/
 @Data
 public class UserBO {

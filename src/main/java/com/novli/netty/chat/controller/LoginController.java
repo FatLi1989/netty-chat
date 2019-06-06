@@ -39,7 +39,7 @@ public class LoginController {
         // 1. 判断用户名是否存在, 如果存在就登录, 不存在就注册
         boolean userNameIsExist = userService.queryUserNameIsExist(users.getUsername());
 
-        UsersVo userResult = null;
+        Users userResult = null;
         if (userNameIsExist) {
             // 1.1 登录
             userResult = userService.queryUserForLogin(users.getUsername(),
@@ -49,10 +49,11 @@ public class LoginController {
             }
         } else {
             // 1.2 注册
-            users = userService.save(users);
+            userResult = userService.save(users);
         }
-        BeanUtils.copyProperties(users, userResult);
-        return JSONResult.ok(userResult);
+        UsersVo usersVo = new UsersVo();
+        BeanUtils.copyProperties(userResult, usersVo);
+        return JSONResult.ok(usersVo);
     }
 
     @RequestMapping(value = "/uploadFaceBase64", method = {RequestMethod.POST})
@@ -61,13 +62,13 @@ public class LoginController {
             2. 文件转换成MultipartFile上传到fastDFS
             3. 拿到图片返回路径并保存到数据库
             4. 返回信息给前端    */
-        Users result = null;
+        Users result = new Users();
         if (!StringUtils.isEmpty(userBO.getFaceData())) {
             if (FileUtils.base64ToFile(FileConstant.FILE_PTAH, userBO.getFaceData())) {
                 MultipartFile file = FileUtils.fileToMultipart(FileConstant.FILE_PTAH);
                 String filePath = fastDFSClient.uploadBase64(file);
 
-                String thump = "_80x80.";
+                String thump = "_150x150.";
                 String arr[] = filePath.split("\\.");
                 String thumpImgUrl = arr[0] + thump + arr[1];
 
