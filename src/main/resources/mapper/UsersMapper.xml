@@ -18,7 +18,12 @@
 
     <sql id="condition">
         <where>
-
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
         </where>
     </sql>
 
@@ -138,7 +143,7 @@
 
     <update id="updateByPrimaryKey" parameterType="com.novli.netty.chat.pojo.Users">
         update users
-        set username      = #{username,jdbcType=VARCHAR},
+        set username       = #{username,jdbcType=VARCHAR},
             password       = #{password,jdbcType=VARCHAR},
             face_image     = #{faceImage,jdbcType=VARCHAR},
             face_image_big = #{faceImageBig,jdbcType=VARCHAR},
