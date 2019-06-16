@@ -8,6 +8,8 @@ public interface FileConstant {
 
     String FILE_PTAH = "C:\\Users\\novli\\Desktop" + System.currentTimeMillis() + "userface64.png";
 
+    String QRCODE_PTAH = "D:\\depDev\\GitWork\\netty-chat\\src\\main\\resources\\img\\qrcode\\"+System.currentTimeMillis()+"qrcode.png";
+
     String FILE_SERVER = "http://106.12.137.47:8888";
 
     String GROUP = "/group1/";
