@@ -1,23 +1,28 @@
 package com.novli.netty.chat.controller;
 
+import com.novli.netty.chat.bo.FindFriendReq;
 import com.novli.netty.chat.bo.UserBO;
+import com.novli.netty.chat.enums.SearchFriendEnum;
 import com.novli.netty.chat.pojo.Users;
 import com.novli.netty.chat.service.UserService;
-import com.novli.netty.chat.util.constant.FileConstant;
+import com.novli.netty.chat.util.constant.FileCons;
 import com.novli.netty.chat.util.file.FastDFSClient;
 import com.novli.netty.chat.util.file.FileUtils;
 import com.novli.netty.chat.util.password.MD5Utils;
 import com.novli.netty.chat.util.result.JSONResult;
 import com.novli.netty.chat.vo.UsersVo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.Valid;
 
 
 @Slf4j
@@ -53,7 +58,7 @@ public class LoginController {
             userResult = userService.save(users);
         }
         UsersVo usersVo = new UsersVo();
-        BeanUtils.copyProperties(usersVo, userResult);
+        BeanUtils.copyProperties(userResult, usersVo);
         return JSONResult.ok(usersVo);
     }
 
@@ -65,8 +70,8 @@ public class LoginController {
             4. 返回信息给前端    */
         Users result = new Users();
         if (!StringUtils.isEmpty(userBO.getFaceData())) {
-            if (FileUtils.base64ToFile(FileConstant.FILE_PTAH, userBO.getFaceData())) {
-                MultipartFile file = FileUtils.fileToMultipart(FileConstant.FILE_PTAH);
+            if (FileUtils.base64ToFile(FileCons.FILE_PTAH, userBO.getFaceData())) {
+                MultipartFile file = FileUtils.fileToMultipart(FileCons.FILE_PTAH);
                 Long startTime = System.currentTimeMillis();
                 log.info("-----------开始向fastDFS上传文件-----------");
                 String filePath = fastDFSClient.uploadBase64(file);
@@ -85,8 +90,41 @@ public class LoginController {
         return JSONResult.ok(result);
     }
 
+    /**
+     * @param findFriendReq
+     * @return setNickName
+     * @author NovLi
+     * @description 通过名字搜索好友
+     * @date 2019/6/23
+     **/
+    @RequestMapping(value = "/search/friend", method = {RequestMethod.POST})
+    public JSONResult searchFriend(@RequestBody @Valid FindFriendReq findFriendReq, BindingResult result) {
+        /**
+         * 1. 搜索好友 -> id 和 好友名字校验
+         * 2. 好友名称不存在 返回该用户不存在
+         * 3. 好友名称是自己 返回不可以添加自己为好友
+         * 4. 还有已经是你的好友 返回该用户已经是你的好友了
+         * 5. 可以添加为好友
+         **/
+        if (result.hasErrors()) {
+            return JSONResult.errorMsg(result.getFieldError().getDefaultMessage());
+        }
+        //查找添加还有前置条件没通过
+        Integer status = userService.perConditionSearchFriends(findFriendReq);
+        if (!status.equals(SearchFriendEnum.SUCCESS.getStatus())) {
+            return JSONResult.errorMsg(SearchFriendEnum.getMsgBykey(status));
+        }
+
+        Users users = userService.queryUserInfoByUserName(findFriendReq.getUserName());
+        UsersVo usersVo = new UsersVo();
+        BeanUtils.copyProperties(users, usersVo);
+
+        return JSONResult.ok(usersVo);
+    }
+
+
     @RequestMapping(value = "/set/nickname", method = {RequestMethod.POST})
-    public JSONResult setNickName(@RequestBody UserBO userBO) throws Exception {
+    public JSONResult searchFriends(@RequestBody UserBO userBO) throws Exception {
         /*  1. 修改nickname
             4. 返回信息给前端    */
         if (StringUtils.isBlank(userBO.getUserId())) {

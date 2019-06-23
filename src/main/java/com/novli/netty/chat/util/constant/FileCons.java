@@ -4,7 +4,7 @@ package com.novli.netty.chat.util.constant;
  * @author Liyanpeng
  * @date 2019/6/5 17:03
  **/
-public interface FileConstant {
+public interface FileCons {
 
     String FILE_PTAH = "C:\\Users\\novli\\Desktop" + System.currentTimeMillis() + "userface64.png";
 
