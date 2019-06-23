@@ -36,6 +36,13 @@ public class LoginController {
     @Autowired
     FastDFSClient fastDFSClient;
 
+    /**
+     * @param users
+     * @return JSONResult
+     * @author NovLi
+     * @description 登录或注册
+     * @date 2019/6/23
+     **/
     @RequestMapping(value = "/registOrLogin", method = {RequestMethod.POST})
     public JSONResult login(@RequestBody Users users) throws Exception {
         // 0. 判断用户名和密码不能为空
@@ -62,6 +69,13 @@ public class LoginController {
         return JSONResult.ok(usersVo);
     }
 
+    /**
+     * @param userBO
+     * @return JSONResult
+     * @author NovLi
+     * @description 上传图片
+     * @date 2019/6/23
+     **/
     @RequestMapping(value = "/uploadFaceBase64", method = {RequestMethod.POST})
     public JSONResult uploadFaceBase64(@RequestBody UserBO userBO) throws Exception {
         /*  1. 接收到base64字符串转换成文件
@@ -122,9 +136,15 @@ public class LoginController {
         return JSONResult.ok(usersVo);
     }
 
-
+    /**
+     * @param userBO
+     * @return JSONResult
+     * @author NovLi
+     * @description 设置好友昵称
+     * @date 2019/6/23
+     **/
     @RequestMapping(value = "/set/nickname", method = {RequestMethod.POST})
-    public JSONResult searchFriends(@RequestBody UserBO userBO) throws Exception {
+    public JSONResult setNickName(@RequestBody UserBO userBO) {
         /*  1. 修改nickname
             4. 返回信息给前端    */
         if (StringUtils.isBlank(userBO.getUserId())) {
