@@ -92,7 +92,6 @@ public class UserServiceImpl implements UserService {
         if (usersMapper.updateByPrimaryKeySelective(users) <= 0) {
             throw new ChatException("修改用户信息失败", 500);
         }
-
         users = usersMapper.selectByPrimaryKey(users);
         users.setFaceImage(users.getFaceImage());
         users.setFaceImageBig(users.getFaceImageBig());
@@ -124,7 +123,7 @@ public class UserServiceImpl implements UserService {
         mfc.andEqualTo("my_user_id", findFriendReq.getUserId());
         mfc.andEqualTo("my_friend_user_id", users.getId());
 
-        MyFriends myFriends = myFriendsMapper.selectOneByExample(mfc);
+        MyFriends myFriends = myFriendsMapper.selectOneByExample(example);
         if (myFriends != null) {
             return SearchFriendEnum.ALREADY_BE_FRIENDS.getStatus();
         }
@@ -137,6 +136,6 @@ public class UserServiceImpl implements UserService {
         Example example = new Example(Users.class);
         Criteria uc = example.createCriteria();
         uc.andEqualTo("username", userName);
-        return usersMapper.selectOneByExample(uc);
+        return usersMapper.selectOneByExample(example);
     }
 }

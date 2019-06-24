@@ -44,10 +44,10 @@ public class LoginController {
      * @date 2019/6/23
      **/
     @RequestMapping(value = "/registOrLogin", method = {RequestMethod.POST})
-    public JSONResult login(@RequestBody Users users) throws Exception {
+    public JSONResult login(@RequestBody @Valid Users users, BindingResult result) throws Exception {
         // 0. 判断用户名和密码不能为空
-        if (StringUtils.isBlank(users.getUsername()) || StringUtils.isBlank(users.getPassword())) {
-            JSONResult.errorMsg("用户名和密码不能为空");
+        if (result.hasErrors()) {
+            return JSONResult.errorMsg(result.getFieldError().getDefaultMessage());
         }
         // 1. 判断用户名是否存在, 如果存在就登录, 不存在就注册
         boolean userNameIsExist = userService.queryUserNameIsExist(users.getUsername());

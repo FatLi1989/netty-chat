@@ -9,4 +9,6 @@ public interface ResultInfoCons {
 
     String USER_NAME_IS_BLANK = "用户名称为空~~~";
 
+    String USER_PASSWORD_IS_BLANK = "用户密码为空~~~";
+
 }

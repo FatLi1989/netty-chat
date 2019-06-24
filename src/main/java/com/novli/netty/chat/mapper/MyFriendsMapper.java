@@ -5,8 +5,7 @@ import com.novli.netty.chat.util.mybaties.ChatMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
-@Mapper
-@Component
+
 public interface MyFriendsMapper extends ChatMapper<MyFriends> {
 
     int insert(MyFriends record);
