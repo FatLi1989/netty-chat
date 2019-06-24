@@ -4,7 +4,6 @@ package com.novli.netty.chat.mapper;
 import com.novli.netty.chat.pojo.FriendsRequest;
 import org.apache.ibatis.annotations.Mapper;
 
-@Mapper
 public interface FriendsRequestMapper {
 
     int deleteByPrimaryKey(String id);
@@ -12,8 +11,6 @@ public interface FriendsRequestMapper {
     int insert(FriendsRequest record);
 
     int insertSelective(FriendsRequest record);
-
-    FriendsRequest selectByPrimaryKey(String id);
 
     int updateByPrimaryKeySelective(FriendsRequest record);
 

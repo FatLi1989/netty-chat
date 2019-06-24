@@ -88,10 +88,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ChatException.class)
     public Users update(Users users) throws ChatException {
+
         if (usersMapper.updateByPrimaryKeySelective(users) <= 0) {
             throw new ChatException("修改用户信息失败", 500);
         }
-        users = usersMapper.selectByPrimaryKey(users.getId());
+
+        users = usersMapper.selectByPrimaryKey(users);
         users.setFaceImage(users.getFaceImage());
         users.setFaceImageBig(users.getFaceImageBig());
         return users;

@@ -10,17 +10,5 @@ import org.springframework.stereotype.Component;
 @Component
 public interface UsersMapper extends ChatMapper<Users> {
 
-    int deleteByPrimaryKey(String id);
-
-    int insert(Users record);
-
-    int insertSelective(Users record);
-
-    Users selectByPrimaryKey(String id);
-
-    int updateByPrimaryKeySelective(Users record);
-
-    int updateByPrimaryKey(Users record);
-
     Users selectOne(Users users);
 }

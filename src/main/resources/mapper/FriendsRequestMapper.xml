@@ -12,13 +12,6 @@
         id, send_user_id, accept_user_id, request_date_time
     </sql>
 
-    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from friends_request
-        where id = #{id,jdbcType=VARCHAR}
-    </select>
-
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete
         from friends_request
