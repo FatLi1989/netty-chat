@@ -14,6 +14,8 @@ public interface UserService {
      *
      * @author Liyanpeng
      * @date 2019/6/5 17:20
+     * @param userName
+     * @return boolean
      **/
     boolean queryUserNameIsExist(String userName);
 
@@ -22,6 +24,9 @@ public interface UserService {
      *
      * @author Liyanpeng
      * @date 2019/6/5 17:20
+     * @param userName
+     * @param password
+     * @return Users
      **/
     Users queryUserForLogin(String userName, String password);
 
@@ -30,6 +35,8 @@ public interface UserService {
      *
      * @author Liyanpeng
      * @date 2019/6/5 17:20
+     * @param users
+     * @return Users
      **/
     Users save(Users users) throws Exception;
 
@@ -38,10 +45,37 @@ public interface UserService {
      *
      * @author Liyanpeng
      * @date 2019/6/5 17:20
+     * @param users
+     * @return Users
      **/
     Users update(Users users) throws ChatException;
 
+    /**
+     * 添加好友前置条件
+     *
+     * @author Liyanpeng
+     * @date 2019/6/25 16:44
+     * @param findFriendReq
+     * @return Integer
+     **/
     Integer perConditionSearchFriends(FindFriendReq findFriendReq);
 
+    /**
+     * 通过用户名字查询用户信息
+     *
+     * @author Liyanpeng
+     * @date 2019/6/25 16:43
+     * @param userName
+     * @return Users
+     **/
     Users queryUserInfoByUserName(String userName);
+
+    /**
+     * 发送好友添加请求
+     *
+     * @author Liyanpeng
+     * @date 2019/6/25 16:43
+     * @param findFriendReq
+     **/
+    void sendFriendRequest(FindFriendReq findFriendReq);
 }

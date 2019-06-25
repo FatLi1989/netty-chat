@@ -2,17 +2,13 @@ package com.novli.netty.chat.mapper;
 
 
 import com.novli.netty.chat.pojo.FriendsRequest;
-import org.apache.ibatis.annotations.Mapper;
+import com.novli.netty.chat.util.mybaties.ChatMapper;
 
-public interface FriendsRequestMapper {
+/** ？？？
+ * @author Liyanpeng
+ * @date 2019/6/25 16:56
+ **/
+public interface FriendsRequestMapper extends ChatMapper<FriendsRequest> {
 
-    int deleteByPrimaryKey(String id);
 
-    int insert(FriendsRequest record);
-
-    int insertSelective(FriendsRequest record);
-
-    int updateByPrimaryKeySelective(FriendsRequest record);
-
-    int updateByPrimaryKey(FriendsRequest record);
 }

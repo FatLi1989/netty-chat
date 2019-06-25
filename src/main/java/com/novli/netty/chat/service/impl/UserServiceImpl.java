@@ -2,8 +2,10 @@ package com.novli.netty.chat.service.impl;
 
 import com.novli.netty.chat.bo.FindFriendReq;
 import com.novli.netty.chat.enums.SearchFriendEnum;
+import com.novli.netty.chat.mapper.FriendsRequestMapper;
 import com.novli.netty.chat.mapper.MyFriendsMapper;
 import com.novli.netty.chat.mapper.UsersMapper;
+import com.novli.netty.chat.pojo.FriendsRequest;
 import com.novli.netty.chat.pojo.MyFriends;
 import com.novli.netty.chat.pojo.Users;
 import com.novli.netty.chat.service.UserService;
@@ -23,6 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Example;
 import tk.mybatis.mapper.entity.Example.Criteria;
 
+import java.util.Date;
+
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
@@ -41,6 +45,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private MyFriendsMapper myFriendsMapper;
+
+    @Autowired
+    private FriendsRequestMapper friendsRequestMapper;
 
 
     @Override
@@ -120,8 +127,8 @@ public class UserServiceImpl implements UserService {
         //添加的用户已经是你的好友了
         Example example = new Example(MyFriends.class);
         Criteria mfc = example.createCriteria();
-        mfc.andEqualTo("my_user_id", findFriendReq.getUserId());
-        mfc.andEqualTo("my_friend_user_id", users.getId());
+        mfc.andEqualTo("myUserId", findFriendReq.getUserId());
+        mfc.andEqualTo("myFriendUserId", users.getId());
 
         MyFriends myFriends = myFriendsMapper.selectOneByExample(example);
         if (myFriends != null) {
@@ -137,5 +144,32 @@ public class UserServiceImpl implements UserService {
         Criteria uc = example.createCriteria();
         uc.andEqualTo("username", userName);
         return usersMapper.selectOneByExample(example);
+    }
+
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ChatException.class)
+    public void sendFriendRequest(FindFriendReq findFriendReq) {
+        /**
+         *   查询到添加好友的名称
+         **/
+        Users friend = queryUserInfoByUserName(findFriendReq.getUserName());
+
+        Example fre = new Example(FriendsRequest.class);
+        Criteria frc = fre.createCriteria();
+        frc.andEqualTo("acceptUserId", friend.getId());
+        frc.andEqualTo("sendUserId", findFriendReq.getUserId());
+        FriendsRequest request = friendsRequestMapper.selectOneByExample(fre);
+
+        if (request == null) {
+            FriendsRequest friendsRequest = new FriendsRequest();
+
+            friendsRequest.setId(sid.nextShort());
+            friendsRequest.setSendUserId(findFriendReq.getUserId());
+            friendsRequest.setAcceptUserId(friend.getId());
+            friendsRequest.setRequestDateTime(new Date());
+            friendsRequestMapper.insert(friendsRequest);
+        }
+
     }
 }

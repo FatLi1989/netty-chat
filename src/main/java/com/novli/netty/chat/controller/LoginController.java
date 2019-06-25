@@ -136,6 +136,37 @@ public class LoginController {
         return JSONResult.ok(usersVo);
     }
 
+
+    /**
+     * @param findFriendReq
+     * @return setNickName
+     * @author NovLi
+     * @description 通过名字搜索好友
+     * @date 2019/6/23
+     **/
+    @RequestMapping(value = "/addFriendReq", method = {RequestMethod.POST})
+    public JSONResult addFriendReq(@RequestBody @Valid FindFriendReq findFriendReq, BindingResult result) {
+        /**
+         * 1. 搜索好友 -> id 和 好友名字校验
+         * 2. 好友名称不存在 返回该用户不存在
+         * 3. 好友名称是自己 返回不可以添加自己为好友
+         * 4. 还有已经是你的好友 返回该用户已经是你的好友了
+         * 5. 添加好友
+         **/
+        if (result.hasErrors()) {
+            return JSONResult.errorMsg(result.getFieldError().getDefaultMessage());
+        }
+        //查找添加还有前置条件没通过
+        Integer status = userService.perConditionSearchFriends(findFriendReq);
+        if (!status.equals(SearchFriendEnum.SUCCESS.getStatus())) {
+            return JSONResult.errorMsg(SearchFriendEnum.getMsgBykey(status));
+        }
+        //添加好友
+        userService.sendFriendRequest(findFriendReq);
+
+        return JSONResult.ok();
+    }
+
     /**
      * @param userBO
      * @return JSONResult
