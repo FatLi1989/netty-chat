@@ -3,6 +3,9 @@ package com.novli.netty.chat.service;
 import com.novli.netty.chat.bo.FindFriendReq;
 import com.novli.netty.chat.pojo.Users;
 import com.novli.netty.chat.util.exception.ChatException;
+import com.novli.netty.chat.vo.FriendReqVo;
+
+import java.util.List;
 
 /**
  * @author Liyanpeng
@@ -78,4 +81,12 @@ public interface UserService {
      * @param findFriendReq
      **/
     void sendFriendRequest(FindFriendReq findFriendReq);
+    /** 查询好友请求列表
+     *
+     * @author Liyanpeng
+     * @date 2019/6/29 10:37
+     * @param userId
+     * @return List<Users>
+     **/
+    List<FriendReqVo> queryFriendsReq(String userId);
 }

@@ -15,6 +15,8 @@ import com.novli.netty.chat.util.exception.ChatException;
 import com.novli.netty.chat.util.file.FastDFSClient;
 import com.novli.netty.chat.util.file.FileUtils;
 import com.novli.netty.chat.util.password.MD5Utils;
+import com.novli.netty.chat.vo.FriendReqVo;
+import com.novli.netty.chat.vo.UsersVo;
 import lombok.extern.slf4j.Slf4j;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import tk.mybatis.mapper.entity.Example;
 import tk.mybatis.mapper.entity.Example.Criteria;
 
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -171,5 +174,17 @@ public class UserServiceImpl implements UserService {
             friendsRequestMapper.insert(friendsRequest);
         }
 
+    }
+
+    /**
+     * 查询好友请求列表
+     *
+     * @author Liyanpeng
+     * @date 2019/6/29 10:38
+     **/
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS, rollbackFor = ChatException.class)
+    public List<FriendReqVo> queryFriendsReq(String userId) {
+        return usersMapper.queryFriendsReq(userId);
     }
 }

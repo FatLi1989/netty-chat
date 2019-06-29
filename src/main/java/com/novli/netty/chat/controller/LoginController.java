@@ -10,6 +10,7 @@ import com.novli.netty.chat.util.file.FastDFSClient;
 import com.novli.netty.chat.util.file.FileUtils;
 import com.novli.netty.chat.util.password.MD5Utils;
 import com.novli.netty.chat.util.result.JSONResult;
+import com.novli.netty.chat.vo.FriendReqVo;
 import com.novli.netty.chat.vo.UsersVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -23,8 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
 
-
+/**
+ * @author Liyanpeng
+ * @date 2019/6/29 10:36
+ **/
 @Slf4j
 @RestController
 @RequestMapping(value = "u")
@@ -188,5 +193,22 @@ public class LoginController {
         return JSONResult.ok(users);
     }
 
+
+    /**
+     * @param userBO
+     * @return JSONResult
+     * @author NovLi
+     * @description 加载好友请求列表
+     * @date 2019/6/23
+     **/
+    @RequestMapping(value = "/queryFriendsReq", method = {RequestMethod.POST})
+    public JSONResult queryFriendsReq(@RequestBody UserBO userBO) {
+        //加载好友请求列表
+        if (StringUtils.isBlank(userBO.getUserId())) {
+            return JSONResult.errorMsg("查询失败哦 没收到用户标识");
+        }
+        List<FriendReqVo> usersVoList = userService.queryFriendsReq(userBO.getUserId());
+        return JSONResult.ok(usersVoList);
+    }
 
 }

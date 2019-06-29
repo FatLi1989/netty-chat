@@ -34,4 +34,14 @@
         <include refid="condition"/>
     </select>
 
+    <select id="queryFriendsReq" resultType="com.novli.netty.chat.vo.FriendReqVo">
+        SELECT sender.id         as sendUserId,
+               sender.username   as sendUsername,
+               sender.face_image as sendFaceImage,
+               sender.nickname   as sendNickName
+        FROM friends_request fr
+                 LEFT JOIN users sender ON sender.id = fr.send_user_id
+        WHERE fr.accept_user_id = #{userId}
+    </select>
+
 </mapper>
