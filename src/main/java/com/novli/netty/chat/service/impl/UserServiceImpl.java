@@ -1,6 +1,7 @@
 package com.novli.netty.chat.service.impl;
 
 import com.novli.netty.chat.bo.FindFriendReq;
+import com.novli.netty.chat.enums.FriendOperateEnum;
 import com.novli.netty.chat.enums.SearchFriendEnum;
 import com.novli.netty.chat.mapper.FriendsRequestMapper;
 import com.novli.netty.chat.mapper.MyFriendsMapper;
@@ -15,8 +16,8 @@ import com.novli.netty.chat.util.exception.ChatException;
 import com.novli.netty.chat.util.file.FastDFSClient;
 import com.novli.netty.chat.util.file.FileUtils;
 import com.novli.netty.chat.util.password.MD5Utils;
+import com.novli.netty.chat.vo.FriendReqOpeVo;
 import com.novli.netty.chat.vo.FriendReqVo;
-import com.novli.netty.chat.vo.UsersVo;
 import lombok.extern.slf4j.Slf4j;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -186,5 +187,57 @@ public class UserServiceImpl implements UserService {
     @Transactional(propagation = Propagation.SUPPORTS, rollbackFor = ChatException.class)
     public List<FriendReqVo> queryFriendsReq(String userId) {
         return usersMapper.queryFriendsReq(userId);
+    }
+
+    /**
+     * @param friendReqOpeVo
+     * @author Liyanpeng
+     * @date 2019/7/1 14:02
+     **/
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ChatException.class)
+    public void operateFriendReq(FriendReqOpeVo friendReqOpeVo) {
+        //忽略请求 删除该条数据
+        if (FriendOperateEnum.ignore.getStatus().equals(friendReqOpeVo.getOperateType())) {
+            delFriendReq(friendReqOpeVo);
+        }
+        //通过请求先添加到好友表中后删除请求
+        if (FriendOperateEnum.pass.getStatus().equals(friendReqOpeVo.getOperateType())) {
+            insertFriendList(friendReqOpeVo.getMyUserId(), friendReqOpeVo.getMyFriendUserId());
+            insertFriendList(friendReqOpeVo.getMyFriendUserId(), friendReqOpeVo.getMyUserId());
+            //删除好友请求
+            delFriendReq(friendReqOpeVo);
+        }
+    }
+
+
+    /**
+     * 添加到好友列表中
+     *
+     * @author Liyanpeng
+     * @date 2019/7/1 14:26
+     **/
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ChatException.class)
+    public void insertFriendList(String myUserId, String myFriendUserId) {
+        MyFriends myFriends = new MyFriends();
+        myFriends.setId(sid.nextShort());
+        myFriends.setMyUserId(myUserId);
+        myFriends.setMyFriendUserId(myFriendUserId);
+        myFriendsMapper.insert(myFriends);
+    }
+
+    /**
+     * 删除好友请求
+     *
+     * @author Liyanpeng
+     * @date 2019/7/1 14:26
+     **/
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ChatException.class)
+    public void delFriendReq(FriendReqOpeVo friendReqOpeVo) {
+        Example fre = new Example(FriendsRequest.class);
+        Criteria frc = fre.createCriteria();
+        frc.andEqualTo("sendUserId", friendReqOpeVo.getMyFriendUserId());
+        frc.andEqualTo("acceptUserId", friendReqOpeVo.getMyUserId());
+        friendsRequestMapper.deleteByExample(fre);
     }
 }

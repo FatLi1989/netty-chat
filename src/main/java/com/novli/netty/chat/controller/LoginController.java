@@ -10,6 +10,7 @@ import com.novli.netty.chat.util.file.FastDFSClient;
 import com.novli.netty.chat.util.file.FileUtils;
 import com.novli.netty.chat.util.password.MD5Utils;
 import com.novli.netty.chat.util.result.JSONResult;
+import com.novli.netty.chat.vo.FriendReqOpeVo;
 import com.novli.netty.chat.vo.FriendReqVo;
 import com.novli.netty.chat.vo.UsersVo;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -209,6 +211,23 @@ public class LoginController {
         }
         List<FriendReqVo> usersVoList = userService.queryFriendsReq(userBO.getUserId());
         return JSONResult.ok(usersVoList);
+    }
+
+
+
+    /**
+     * @param friendReqOpeVo
+     * @return JSONResult
+     * @author NovLi
+     * @description 操作好友请求
+     * @date 2019/6/23
+     **/
+    @RequestMapping(value = "/operateFriendReq", method = {RequestMethod.POST})
+    public JSONResult operateFriendReq(@RequestBody @Validated FriendReqOpeVo friendReqOpeVo) {
+
+        userService.operateFriendReq(friendReqOpeVo);
+
+        return JSONResult.ok();
     }
 
 }
