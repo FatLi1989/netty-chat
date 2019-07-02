@@ -94,11 +94,23 @@ public interface UserService {
     List<FriendReqVo> queryFriendsReq(String userId);
 
     /**
-     * 操作好友请求
+     * 删除好友列表
      *
-     * @author Liyanpeng
-     * @date 2019/7/1 14:01
-     * @param friendReqOpeVo
+     * @param acceptUserId
+     * @param sendUserId
+     * @author NovLi
+     * @date 2019/7/2
      **/
-    void operateFriendReq(FriendReqOpeVo friendReqOpeVo);
+    void delFriendReq(String acceptUserId, String sendUserId);
+
+    /**
+     * 好友通过
+     *
+     * @param acceptUserId
+     * @param sendUserId
+     * @author NovLi
+     * @description //TODO
+     * @date 2019/7/2
+     **/
+    void passFriendReq(String acceptUserId, String sendUserId);
 }

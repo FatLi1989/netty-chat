@@ -2,6 +2,7 @@ package com.novli.netty.chat.controller;
 
 import com.novli.netty.chat.bo.FindFriendReq;
 import com.novli.netty.chat.bo.UserBO;
+import com.novli.netty.chat.enums.FriendOperateEnum;
 import com.novli.netty.chat.enums.SearchFriendEnum;
 import com.novli.netty.chat.pojo.Users;
 import com.novli.netty.chat.service.UserService;
@@ -223,10 +224,17 @@ public class LoginController {
      * @date 2019/6/23
      **/
     @RequestMapping(value = "/operateFriendReq", method = {RequestMethod.POST})
-    public JSONResult operateFriendReq(@RequestBody @Validated FriendReqOpeVo friendReqOpeVo) {
+    public JSONResult operateFriendReq(@RequestBody @Validated FriendReqOpeVo friendReqOpeVo, BindingResult result) {
 
-        userService.operateFriendReq(friendReqOpeVo);
+        if (result.hasErrors()) {
+            JSONResult.errorMsg(result.getFieldError().getDefaultMessage());
+        }
 
+       if (FriendOperateEnum.ignore.getStatus().equals(friendReqOpeVo.getOperateType())) {
+           userService.delFriendReq(friendReqOpeVo.getMyUserId(), friendReqOpeVo.getMyFriendUserId());
+       } else if (FriendOperateEnum.pass.getStatus().equals(friendReqOpeVo.getOperateType())) {
+           userService.passFriendReq(friendReqOpeVo.getMyUserId(), friendReqOpeVo.getMyFriendUserId());
+       }
         return JSONResult.ok();
     }
 

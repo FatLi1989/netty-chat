@@ -12,11 +12,11 @@ public enum FriendOperateEnum {
     /**
      * 通过好友请求
      **/
-    ignore("0", "通过请求"),
+    ignore("1", "通过请求"),
     /**
      * 忽略好友请求
      **/
-    pass("1", "忽略请求");
+    pass("0", "忽略请求");
 
     private String status;
 

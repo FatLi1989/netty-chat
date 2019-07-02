@@ -190,24 +190,36 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * @param friendReqOpeVo
+     * 删除好友请求
+     *
      * @author Liyanpeng
-     * @date 2019/7/1 14:02
+     * @date 2019/7/1 14:26
      **/
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ChatException.class)
-    public void operateFriendReq(FriendReqOpeVo friendReqOpeVo) {
-        //忽略请求 删除该条数据
-        if (FriendOperateEnum.ignore.getStatus().equals(friendReqOpeVo.getOperateType())) {
-            delFriendReq(friendReqOpeVo);
-        }
-        //通过请求先添加到好友表中后删除请求
-        if (FriendOperateEnum.pass.getStatus().equals(friendReqOpeVo.getOperateType())) {
-            insertFriendList(friendReqOpeVo.getMyUserId(), friendReqOpeVo.getMyFriendUserId());
-            insertFriendList(friendReqOpeVo.getMyFriendUserId(), friendReqOpeVo.getMyUserId());
-            //删除好友请求
-            delFriendReq(friendReqOpeVo);
-        }
+    public void delFriendReq(String acceptUserId, String sendUserId) {
+        Example fre = new Example(FriendsRequest.class);
+        Criteria frc = fre.createCriteria();
+        frc.andEqualTo("sendUserId", sendUserId);
+        frc.andEqualTo("acceptUserId", acceptUserId);
+        friendsRequestMapper.deleteByExample(fre);
+    }
+
+    /**
+     * 通过好友请求
+     *
+     * @param sendUserId
+     * @param acceptUserId
+     * @author NovLi
+     * @date 2019/7/2
+     **/
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ChatException.class)
+    public void passFriendReq(String acceptUserId, String sendUserId) {
+        insertFriendList(acceptUserId, sendUserId);
+        insertFriendList(sendUserId, acceptUserId);
+        //删除好友请求
+        delFriendReq(acceptUserId, sendUserId);
     }
 
 
@@ -226,18 +238,4 @@ public class UserServiceImpl implements UserService {
         myFriendsMapper.insert(myFriends);
     }
 
-    /**
-     * 删除好友请求
-     *
-     * @author Liyanpeng
-     * @date 2019/7/1 14:26
-     **/
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ChatException.class)
-    public void delFriendReq(FriendReqOpeVo friendReqOpeVo) {
-        Example fre = new Example(FriendsRequest.class);
-        Criteria frc = fre.createCriteria();
-        frc.andEqualTo("sendUserId", friendReqOpeVo.getMyFriendUserId());
-        frc.andEqualTo("acceptUserId", friendReqOpeVo.getMyUserId());
-        friendsRequestMapper.deleteByExample(fre);
-    }
 }
