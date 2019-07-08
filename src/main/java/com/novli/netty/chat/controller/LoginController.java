@@ -11,9 +11,7 @@ import com.novli.netty.chat.util.file.FastDFSClient;
 import com.novli.netty.chat.util.file.FileUtils;
 import com.novli.netty.chat.util.password.MD5Utils;
 import com.novli.netty.chat.util.result.JSONResult;
-import com.novli.netty.chat.vo.FriendReqOpeVo;
-import com.novli.netty.chat.vo.FriendReqVo;
-import com.novli.netty.chat.vo.UsersVo;
+import com.novli.netty.chat.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -215,7 +213,6 @@ public class LoginController {
     }
 
 
-
     /**
      * @param friendReqOpeVo
      * @return JSONResult
@@ -230,12 +227,33 @@ public class LoginController {
             JSONResult.errorMsg(result.getFieldError().getDefaultMessage());
         }
 
-       if (FriendOperateEnum.ignore.getStatus().equals(friendReqOpeVo.getOperateType())) {
-           userService.delFriendReq(friendReqOpeVo.getMyUserId(), friendReqOpeVo.getMyFriendUserId());
-       } else if (FriendOperateEnum.pass.getStatus().equals(friendReqOpeVo.getOperateType())) {
-           userService.passFriendReq(friendReqOpeVo.getMyUserId(), friendReqOpeVo.getMyFriendUserId());
-       }
-        return JSONResult.ok();
+        if (FriendOperateEnum.ignore.getStatus().equals(friendReqOpeVo.getOperateType())) {
+            userService.delFriendReq(friendReqOpeVo.getMyUserId(), friendReqOpeVo.getMyFriendUserId());
+        } else if (FriendOperateEnum.pass.getStatus().equals(friendReqOpeVo.getOperateType())) {
+            userService.passFriendReq(friendReqOpeVo.getMyUserId(), friendReqOpeVo.getMyFriendUserId());
+        }
+        //返回还有列表信息
+       List<MyFriendsVo> myFriendsVoList = userService.queryMyFriend(friendReqOpeVo.getMyUserId());
+
+        return JSONResult.ok(myFriendsVoList);
     }
+
+    /**
+     * @param friendIdForm
+     * @return JSONResult
+     * @author NovLi
+     * @description 操作好友请求
+     * @date 2019/6/23
+     **/
+    @RequestMapping(value = "/myFriend", method = {RequestMethod.POST})
+    public JSONResult myFriend(@RequestBody @Valid FriendIdForm friendIdForm, BindingResult result) {
+        if (result.hasErrors()) {
+            return JSONResult.errorMsg(result.getFieldError().getDefaultMessage());
+        }
+        List<MyFriendsVo> myFriendsVoList = userService.queryMyFriend(friendIdForm.getUserId());
+
+        return JSONResult.ok(myFriendsVoList);
+    }
+
 
 }

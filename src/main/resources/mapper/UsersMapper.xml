@@ -44,4 +44,14 @@
         WHERE fr.accept_user_id = #{userId}
     </select>
 
+    <select id="queryMyFriends" resultType="com.novli.netty.chat.vo.MyFriendsVo">
+        SELECT u.id         as myFriendUserId,
+               u.username   as myFriendUserName,
+               u.face_image as myFriendFaceImage,
+               u.nickname   as myFriendNickName
+        FROM my_friends mf
+                 LEFT JOIN users u ON u.id = mf.my_friend_user_id
+        WHERE mf.my_user_id = #{userId}
+    </select>
+
 </mapper>

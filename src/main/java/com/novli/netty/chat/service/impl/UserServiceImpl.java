@@ -1,7 +1,6 @@
 package com.novli.netty.chat.service.impl;
 
 import com.novli.netty.chat.bo.FindFriendReq;
-import com.novli.netty.chat.enums.FriendOperateEnum;
 import com.novli.netty.chat.enums.SearchFriendEnum;
 import com.novli.netty.chat.mapper.FriendsRequestMapper;
 import com.novli.netty.chat.mapper.MyFriendsMapper;
@@ -16,8 +15,8 @@ import com.novli.netty.chat.util.exception.ChatException;
 import com.novli.netty.chat.util.file.FastDFSClient;
 import com.novli.netty.chat.util.file.FileUtils;
 import com.novli.netty.chat.util.password.MD5Utils;
-import com.novli.netty.chat.vo.FriendReqOpeVo;
 import com.novli.netty.chat.vo.FriendReqVo;
+import com.novli.netty.chat.vo.MyFriendsVo;
 import lombok.extern.slf4j.Slf4j;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +29,7 @@ import tk.mybatis.mapper.entity.Example.Criteria;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -222,6 +222,21 @@ public class UserServiceImpl implements UserService {
         delFriendReq(acceptUserId, sendUserId);
     }
 
+    /**
+     * 查询好友列表
+     *
+     * @param userId
+     * @return  List<MyFriendsVo>
+     * @author NovLi
+     * @description //TODO
+     * @date 2019/7/2
+     **/
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<MyFriendsVo> queryMyFriend(String userId) {
+        return usersMapper.queryMyFriends(userId);
+    }
+
 
     /**
      * 添加到好友列表中
@@ -237,5 +252,4 @@ public class UserServiceImpl implements UserService {
         myFriends.setMyFriendUserId(myFriendUserId);
         myFriendsMapper.insert(myFriends);
     }
-
 }

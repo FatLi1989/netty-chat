@@ -5,6 +5,7 @@ import com.novli.netty.chat.pojo.Users;
 import com.novli.netty.chat.util.exception.ChatException;
 import com.novli.netty.chat.vo.FriendReqOpeVo;
 import com.novli.netty.chat.vo.FriendReqVo;
+import com.novli.netty.chat.vo.MyFriendsVo;
 
 import java.util.List;
 
@@ -113,4 +114,14 @@ public interface UserService {
      * @date 2019/7/2
      **/
     void passFriendReq(String acceptUserId, String sendUserId);
+    /**
+     * 查询好友列表
+     *
+     * @param userId
+     * @return  List<MyFriendsVo>
+     * @author NovLi
+     * @description //TODO
+     * @date 2019/7/2
+     **/
+    List<MyFriendsVo> queryMyFriend(String userId);
 }
